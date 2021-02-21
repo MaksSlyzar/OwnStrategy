@@ -46,6 +46,27 @@ $('#connectForm #ok').click( () => {
     }
 });
 
+function fullAccess(nickname = "Developer") {
+    socket.emit('registerNewPlayer', { name: nickname });
+    socket.on('registerNewPlayerFinish', (data, player) => {
+        if (data == true) {
+            //Load game
+            console.log(player)
+            Player = player;
+
+            //Visible elements
+            $("#connectForm").fadeOut();
+            $("#chat").fadeIn();
+
+            console.log('Registration successfuly');
+        } else {
+            alert('Registration failed.');
+        }
+    });
+}
+
+fullAccess();
+
 </script>
 
 <style>
