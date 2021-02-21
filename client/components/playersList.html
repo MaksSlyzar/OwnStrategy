@@ -1,0 +1,45 @@
+<div>
+    <div class="header">Players</div>
+    <div class="list"></div>
+</div>
+
+<style>
+#playersList {
+    position: absolute;
+    background: rgb(0, 0, 0, 0.3);
+    width: 200px;
+    max-height: 300px;
+}
+
+#playersList .header {
+    color: white;
+}
+
+#playersList .player {
+    color: gray;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 5px 5px 5px 5px;
+    font-size:14px;
+}
+
+#playersList .header {
+    font-size: 18px;
+    padding: 10px 10px 2px 10px;
+}
+</style>
+
+<script>
+
+socket.on('sendPlayersList', (data) => {
+    $(".list").html('');
+    if (data) {
+        for (playerId in data) {
+            player = data[playerId];
+
+            if (player.online)
+                $(".list").append(`<div class="player">${player.name}</div>`);
+        }
+    }
+});
+
+</script>

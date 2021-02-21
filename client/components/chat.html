@@ -1,0 +1,71 @@
+
+<div id="messages"></div>
+
+<div id="inputMessage">
+    <input placeholder="Message" class="input" type="text" />
+    <button id="sendmessage">Send</button>
+</div>
+
+<style>
+#chat {
+    position: absolute;
+    width: 400px;
+    height: 300px;
+    background: rgb(0, 0, 0, 0.4);
+    top: calc(100% - 300px);
+}
+
+#chat #inputMessage .input {
+    width: calc(100% - 100px);
+    height: 30px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+#chat #inputMessage #sendmessage {
+    width: 95px;
+    height: 30px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+#chat #messages {
+    width: 100%;
+    height: calc(100% - 30px);
+}
+
+#chat #messages .item {
+    display: flex;
+}
+
+#chat #messages .item .author {
+    padding: 0 10px 0 0;
+    color: gray;
+}
+
+</style>
+
+<script>
+$("#chat #inputMessage #sendmessage").click(() => {
+    if (Player) {
+        socket.emit('sendMessage', {
+            to: 'All',
+            text: $("#chat #inputMessage .input").val(),
+            player: Player
+        });
+        $("#chat #inputMessage .input").val('')
+    } else {
+        alert('Start game.');
+    }
+});
+
+socket.on('sendMessageGet', (message) => {
+    console.log(message);
+    $("#chat #messages").append(`<div class="item">
+                                    <div class="author">${message.player}</div>: 
+                                    <div class="content">${message.text}</div>
+                                </div>`);
+});
+</script>
