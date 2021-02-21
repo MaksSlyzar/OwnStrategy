@@ -9,38 +9,153 @@
 </style>
 
 <script>
-var ctx = backgroundCanvas.getContext('2d');
 
-backgroundCanvas.width = window.innerWidth;
-backgroundCanvas.height = window.innerHeight;
-alert('Click to activate full screen mode.');
-var m = [];
+class backgroundCanvasObject {
+    m = [];
+    ctx = backgroundCanvas.getContext('2d');
 
-function Update() {
-  
-    backgroundCanvas.width = window.innerWidth;
-    backgroundCanvas.height = window.innerHeight;
+    constructor () {
+        backgroundCanvas.width = window.innerWidth;
+        backgroundCanvas.height = window.innerHeight;
+        this.ctx = backgroundCanvas.getContext('2d');
+        this.m = [];
 
-    ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
-    Draw();
-    move();
-    //optimization();
-    requestAnimationFrame(Update);
-}
+        backgroundCanvas.onclick = function(e) {
+            //fullScreen(backgroundCanvas);
+            var xCl = e.clientX;
+            var yCl = e.clientY;
+            for (var k = 0; k < 10; k++) {
+                this.m.push([]);
+                this.m[this.m.length - 1].push(xCl);
+                this.m[this.m.length - 1].push(yCl);
+                this.m[this.m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
+                this.m[this.m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
+                var rgb = {
+                    r: randomInteger(0, 255),
+                    g: randomInteger(0, 255),
+                    b: randomInteger(0, 255)
+                };
+                this.m[this.m.length - 1].push(rgb.r);
+                this.m[this.m.length - 1].push(rgb.g);
+                this.m[this.m.length - 1].push(rgb.b);
+                this.m[this.m.length - 1].push(3);
+            }
+        }
 
-function Draw() {
-    for (var i = 0; i < m.length; i++) {
-        ctx.fillStyle = "rgb(" + m[i][4] + "," + m[i][5] + "," + m[i][6] + ")";
-        ctx.fillRect(m[i][0], m[i][1], 7, 7);
+        backgroundCanvas.onmousemove = (e) => {
+            var xCl = e.clientX;
+            var yCl = e.clientY;
+            for (var k = 0; k < 10; k++) {
+                this.m.push([]);
+                this.m[this.m.length - 1].push(xCl);
+                this.m[this.m.length - 1].push(yCl);
+                this.m[this.m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
+                this.m[this.m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
+                var rgb = {
+                    r: randomInteger(0, 255),
+                    g: randomInteger(0, 255),
+                    b: randomInteger(0, 255)
+                        //r: 0,
+                        //g: 0,
+                        //b: 0
+                };
+                this.m[this.m.length - 1].push(rgb.r);
+                this.m[this.m.length - 1].push(rgb.g);
+                this.m[this.m.length - 1].push(rgb.b);
+                this.m[this.m.length - 1].push(3);
+            }
+        }
+
+        backgroundCanvas.ontouchmove = (e) => {
+            var touchobj = e.changedTouches[0]
+            var dist = parseInt(touchobj.clientX);
+
+            var xCl = touchobj.clientX;
+            var yCl = touchobj.clientY;
+
+            for (var k = 0; k < 10; k++) {
+                this.m.push([]);
+                this.m[this.m.length - 1].push(xCl);
+                this.m[this.m.length - 1].push(yCl);
+                this.m[this.m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
+                this.m[this.m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
+                var rgb = {
+                    r: randomInteger(0, 255),
+                    g: randomInteger(0, 255),
+                    b: randomInteger(0, 255)
+                };
+                this.m[this.m.length - 1].push(rgb.r);
+                this.m[this.m.length - 1].push(rgb.g);
+                this.m[this.m.length - 1].push(rgb.b);
+                this.m[this.m.length - 1].push(3);
+            }
+        }
+
+        
+        this.Update(this);
+        this.optimization(this);
     }
+
+    Update(self) {
+        backgroundCanvas.width = window.innerWidth;
+        backgroundCanvas.height = window.innerHeight;
+
+
+        self.ctx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
+        self.Draw();
+        self.move();
+        //optimization();
+        requestAnimationFrame(() => {
+            this.Update(self);
+        });
+    }
+
+    Draw() {
+        for (var i = 0; i < this.m.length; i++) {
+            this.ctx.fillStyle = "rgb(" + this.m[i][4] + "," + this.m[i][5] + "," + this.m[i][6] + ")";
+            this.ctx.fillRect(this.m[i][0], this.m[i][1], 7, 7);
+        }
+    }
+
+    move() {
+        for (var i = 0; i < this.m.length; i++) {
+            this.m[i][0] += this.m[i][2];
+            this.m[i][1] += this.m[i][3];
+        }
+    }
+
+    optimization(self) {
+        /*for (var i = 0; i < m.length; i++) {
+            if (m[i][0] < 0) {
+                m[i].splice(1, 1);
+            }
+            if (m[i][0] > 1360) {
+                m[i].splice(1, 1);
+            }
+            if (m[i][1] < 0) {
+                m[i].splice(1, 1);
+            }
+            if (m[i][1] > 700) {
+                m[i].splice(1, 1);
+            }
+        }*/
+
+        for (var i = 0; i < this.m.length; i++) {
+            this.m[i][7]--;
+            if (this.m[i][7] < 0) {
+                this.m.splice(i, 1);
+            }
+        }
+        setTimeout(() => {
+            this.optimization(self)
+        }, 600);
+    }
+
 }
 
-function move() {
-    for (var i = 0; i < m.length; i++) {
-        m[i][0] += m[i][2];
-        m[i][1] += m[i][3];
-    }
-}
+const BackgroundCanvas = new backgroundCanvasObject();
+
+
 function fullScreen(element) {
     if (element.requestFullscreen) {
         element.requestFullscreen();
@@ -50,110 +165,12 @@ function fullScreen(element) {
         element.mozRequestFullScreen();
     }
     
-}
-backgroundCanvas.onclick = function(e) {
-    //fullScreen(backgroundCanvas);
-    var xCl = e.clientX;
-    var yCl = e.clientY;
-    for (var k = 0; k < 10; k++) {
-        m.push([]);
-        m[m.length - 1].push(xCl);
-        m[m.length - 1].push(yCl);
-        m[m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
-        m[m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
-        var rgb = {
-            r: randomInteger(0, 255),
-            g: randomInteger(0, 255),
-            b: randomInteger(0, 255)
-        };
-        m[m.length - 1].push(rgb.r);
-        m[m.length - 1].push(rgb.g);
-        m[m.length - 1].push(rgb.b);
-        m[m.length - 1].push(3);
-    }
-
+    
 }
 
-backgroundCanvas.onmousemove = (e) => {
-    var xCl = e.clientX;
-    var yCl = e.clientY;
-    for (var k = 0; k < 10; k++) {
-        m.push([]);
-        m[m.length - 1].push(xCl);
-        m[m.length - 1].push(yCl);
-        m[m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
-        m[m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
-        var rgb = {
-            r: randomInteger(0, 255),
-            g: randomInteger(0, 255),
-            b: randomInteger(0, 255)
-                //r: 0,
-                //g: 0,
-                //b: 0
-        };
-        m[m.length - 1].push(rgb.r);
-        m[m.length - 1].push(rgb.g);
-        m[m.length - 1].push(rgb.b);
-        m[m.length - 1].push(3);
-    }
-}
-
-function optimization() {
-    /*for (var i = 0; i < m.length; i++) {
-        if (m[i][0] < 0) {
-            m[i].splice(1, 1);
-        }
-        if (m[i][0] > 1360) {
-            m[i].splice(1, 1);
-        }
-        if (m[i][1] < 0) {
-            m[i].splice(1, 1);
-        }
-        if (m[i][1] > 700) {
-            m[i].splice(1, 1);
-        }
-    }*/
-
-    for (var i = 0; i < m.length; i++) {
-        m[i][7]--;
-        if (m[i][7] < 0) {
-            m.splice(i, 1);
-        }
-    }
-    setTimeout(optimization, 600);
-}
 
 function randomInteger(min, max) {
     let rand = min + Math.random() * (max - min);
     return Math.round(rand);
 }
-
-backgroundCanvas.addEventListener('touchmove', function(e) {
-    var touchobj = e.changedTouches[0] // первая точка прикосновения для данного события
-    var dist = parseInt(touchobj.clientX);
-
-
-    var xCl = touchobj.clientX;
-    var yCl = touchobj.clientY;
-    for (var k = 0; k < 10; k++) {
-        m.push([]);
-        m[m.length - 1].push(xCl);
-        m[m.length - 1].push(yCl);
-        m[m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
-        m[m.length - 1].push(randomInteger(-50 / 10, 50 / 10));
-        var rgb = {
-            r: randomInteger(0, 255),
-            g: randomInteger(0, 255),
-            b: randomInteger(0, 255)
-        };
-        m[m.length - 1].push(rgb.r);
-        m[m.length - 1].push(rgb.g);
-        m[m.length - 1].push(rgb.b);
-        m[m.length - 1].push(3);
-    }
-    e.preventDefault()
-}, false)
-
-Update();
-optimization();
 </script>
