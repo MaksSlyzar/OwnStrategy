@@ -1,4 +1,8 @@
-<canvas id="gameCanvas"></canvas>
+<div id="gameWrapper">
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="buildsTable"></div>
+</div>
 
 <style>
 #game {
@@ -6,11 +10,22 @@
     width: 100%;
     height: 100%;
 }
+
+#game #gameWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#game #gameWrapper #gameCanvas {
+    position: absolute;
+}
 </style>
 
 <script>
-//const ctx = gameCanvas.getContext('2d');
-
+$(function(){
+    $("#game #gameWrapper #buildsTable").load("components/gameGui/buildsTable.html");
+})
 
 class Game {
     constructor () {
@@ -18,4 +33,5 @@ class Game {
         gameCanvas.height = window.innerHeight;
     }
 }
+
 </script>
