@@ -50,6 +50,7 @@ $('#connectForm #ok').click( () => {
 
 function fullAccess(nickname = "Developer") {
     socket.emit('registerNewPlayer', { name: nickname });
+    console.log('Hmm..')
     socket.on('registerNewPlayerFinish', (data, player) => {
         if (data == true) {
             //Load game
@@ -69,8 +70,7 @@ function fullAccess(nickname = "Developer") {
     });
 }
 
-//fullAccess();
-
+fullAccess();
 </script>
 
 <style>

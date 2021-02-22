@@ -19,6 +19,8 @@
 
 #game #gameWrapper #gameCanvas {
     position: absolute;
+    left: 0;
+    top: 0;
 }
 </style>
 
@@ -28,10 +30,77 @@ $(function(){
 })
 
 class Game {
+    camera = {
+        x: 10,
+        y: 0,
+        blockWidth: 55,
+        blockHeight: 55
+    }
+
     constructor () {
         gameCanvas.width = window.innerWidth;
         gameCanvas.height = window.innerHeight;
+        
+        this.images = {
+            "default_clite": new Image(),
+            "stone_ore_clite": new Image(),
+            "iron_ore_clite": new Image()
+        }
+
+        this.images.default_clite.src = "img/default_clite.png";
+        this.images.stone_ore_clite.src = "img/stone_ore_clite.png";
+        this.images.iron_ore_clite.src = "img/iron_ore_clite.png";
+
+        this.canvas = gameCanvas;
+
+        console.log()
+
+        this.ctx = gameCanvas.getContext('2d');
+        this.update(this);
+    }
+
+    update(self) {
+        self.drawGrid();
+        requestAnimationFrame(() => {
+            this.update(self);
+        });
+    }
+
+    drawGrid() {
+        let startX = Math.floor(this.camera.x / this.camera.blockWidth);
+        let startY = Math.floor(this.camera.y / this.camera.blockHeight);
+
+        let overX = startX + Math.floor(this.canvas.width / this.camera.blockWidth) + 1;
+        let overY = startY + Math.floor(this.canvas.height / this.camera.blockHeight) + 2;
+
+        for (let y = startY; y < overY; y++) {
+            for (let x = startX; x < overX; x++) {
+                this.ctx.drawImage(this.images.default_clite,
+                                    x * this.camera.blockWidth - this.camera.x,
+                                    y * this.camera.blockHeight - this.camera.y,
+                                    this.camera.blockWidth,
+                                    this.camera.blockHeight);
+            }
+        }
+
+        let x = 10, y = 4;
+
+        this.ctx.drawImage(this.images.stone_ore_clite,
+                                    x * this.camera.blockWidth - this.camera.x,
+                                    y * this.camera.blockHeight - this.camera.y,
+                                    this.camera.blockWidth,
+                                    this.camera.blockHeight);
+
+        x = 14, y = 5;
+
+        this.ctx.drawImage(this.images.iron_ore_clite,
+                                    x * this.camera.blockWidth - this.camera.x,
+                                    y * this.camera.blockHeight - this.camera.y,
+                                    this.camera.blockWidth,
+                                    this.camera.blockHeight);
     }
 }
 
+
+let _game = new Game();
 </script>

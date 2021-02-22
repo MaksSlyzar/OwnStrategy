@@ -1,3 +1,6 @@
+<div class="topbar">
+    Close
+</div>
 
 <div id="messages"></div>
 
@@ -13,6 +16,15 @@
     height: 300px;
     background: rgb(0, 0, 0, 0.4);
     top: calc(100% - 300px);
+}
+
+#chat .topbar {
+    position: absolute;
+    left: calc(100% - 56px);
+    font-size: 20px;
+    color: rgb(192, 192, 192);
+    width: 56px;
+    height: 56px;
 }
 
 #chat #inputMessage .input {
@@ -54,6 +66,10 @@
 </style>
 
 <script>
+$("#chat .topbar").click(() => {
+    //Add close button
+});
+
 $("#chat #inputMessage #sendmessage").click(() => {
     if ( $("#chat #inputMessage .input").val().length > 0 ) {
         if (Player) {
