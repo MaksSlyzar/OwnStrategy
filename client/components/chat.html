@@ -55,15 +55,32 @@
 
 <script>
 $("#chat #inputMessage #sendmessage").click(() => {
-    if (Player) {
-        socket.emit('sendMessage', {
-            to: 'All',
-            text: $("#chat #inputMessage .input").val(),
-            player: Player
-        });
-        $("#chat #inputMessage .input").val('')
-    } else {
-        alert('Start game.');
+    if ( $("#chat #inputMessage .input").val().length > 0 ) {
+        if (Player) {
+            socket.emit('sendMessage', {
+                to: 'All',
+                text: $("#chat #inputMessage .input").val(),
+                player: Player
+            });
+            $("#chat #inputMessage .input").val('')
+        } else {
+            alert('Start game.');
+        }
+    }
+});
+
+$("#chat #inputMessage .input").keypress( event => {
+    if (event.keyCode == 13 && $("#chat #inputMessage .input").val().length > 0) {
+        if (Player) {
+            socket.emit('sendMessage', {
+                to: 'All',
+                text: $("#chat #inputMessage .input").val(),
+                player: Player
+            });
+            $("#chat #inputMessage .input").val('')
+        } else {
+            alert('Start game.');
+        }
     }
 });
 
