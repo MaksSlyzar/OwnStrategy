@@ -33,8 +33,21 @@ class Game {
     camera = {
         x: 10,
         y: 0,
-        blockWidth: 55,
-        blockHeight: 55
+        move: {
+            speed: 0,
+            x: 0,
+            y: 0,
+            sellSpeed: 0,
+            xDown: null,
+            yDown: null
+        },
+        blockWidth: 64,
+        blockHeight: 64
+    }
+
+    mouse = {
+        down: false,
+        move: false
     }
 
     constructor () {
@@ -57,10 +70,84 @@ class Game {
 
         this.ctx = gameCanvas.getContext('2d');
         this.update(this);
+        
+        //Events
+        gameCanvas.onmousedown = (e) => {
+            var xCl = e.clientX;
+            var yCl = e.clientY;
+
+            this.camera.move.xDown = xCl;
+            this.camera.move.yDown = yCl;
+
+            this.mouse.down = true;
+        }
+
+        gameCanvas.onmousemove = (e) => {
+            var xCl = e.clientX;
+            var yCl = e.clientY;
+
+            if (this.mouse.down == true) {
+                this.camera.x += (this.camera.move.xDown - xCl);
+                this.camera.y += (this.camera.move.yDown - yCl);
+
+                this.camera.move.xDown = xCl;
+                this.camera.move.yDown = yCl;
+            }
+        }
+
+        gameCanvas.onmouseup = (e) => {
+            var xCl = e.clientX;
+            var yCl = e.clientY;
+
+            this.mouse.down = false;
+        }
+
+        gameCanvas.ontouchstart = (e) => {
+            var touchobj = e.changedTouches[0];
+            var dist = parseInt(touchobj.clientX);
+
+            var xCl = touchobj.clientX;
+            var yCl = touchobj.clientY;
+
+            this.mouse.down = true;
+        }
+
+        gameCanvas.ontouchmove = (e) => {
+            var touchobj = e.changedTouches[0];
+            var dist = parseInt(touchobj.clientX);
+
+            var xCl = touchobj.clientX;
+            var yCl = touchobj.clientY;
+
+            if (this.mouse.down) {
+                if (this.camera.move.xDown){
+                    this.camera.x += (this.camera.move.xDown - xCl);
+                    this.camera.y += (this.camera.move.yDown - yCl);
+                }
+                this.camera.move.xDown = xCl;
+                this.camera.move.yDown = yCl;
+            }
+        }
+
+        gameCanvas.ontouchend = (e) => {
+            var touchobj = e.changedTouches[0];
+            var dist = parseInt(touchobj.clientX);
+
+            var xCl = touchobj.clientX;
+            var yCl = touchobj.clientY;
+
+            this.mouse.down = false;
+            this.camera.move.xDown = null;
+            this.camera.move.yDown = null;
+        }
     }
 
     update(self) {
         self.drawGrid();
+        self.moveCamera();
+
+        console.log(self.camera.x, self.camera.y);
+
         requestAnimationFrame(() => {
             this.update(self);
         });
@@ -70,7 +157,7 @@ class Game {
         let startX = Math.floor(this.camera.x / this.camera.blockWidth);
         let startY = Math.floor(this.camera.y / this.camera.blockHeight);
 
-        let overX = startX + Math.floor(this.canvas.width / this.camera.blockWidth) + 1;
+        let overX = startX + Math.floor(this.canvas.width / this.camera.blockWidth) + 2;
         let overY = startY + Math.floor(this.canvas.height / this.camera.blockHeight) + 2;
 
         for (let y = startY; y < overY; y++) {
@@ -98,6 +185,12 @@ class Game {
                                     y * this.camera.blockHeight - this.camera.y,
                                     this.camera.blockWidth,
                                     this.camera.blockHeight);
+    }
+
+    //Don't need it
+    moveCamera () {
+        this.camera.x += this.camera.move.speed * this.camera.move.x;
+        this.camera.y += this.camera.move.speed * this.camera.move.y;
     }
 }
 

@@ -1,0 +1,18 @@
+<div id="button">Chat</div>
+
+<script>
+$("#chatShowButton").click(() => {
+    $("#chat").fadeIn();
+    $("#chatShowButton").fadeOut();
+});
+</script>
+
+<style>
+#chatShowButton {
+    position: absolute;
+    left: 0px;
+    top: calc(100% - 50px);
+    font-size: 20px;
+    color: rgb(192, 192, 192)
+}
+</style>

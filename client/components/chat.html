@@ -107,4 +107,9 @@ socket.on('sendMessageGet', (message) => {
                                     <div class="content">${message.text}</div>
                                 </div>`);
 });
+
+$("#chat .topbar").click(() => {
+    $("#chat").fadeOut();
+    $("#chatShowButton").fadeIn();
+});
 </script>

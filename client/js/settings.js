@@ -13,8 +13,9 @@ $(function(){
     $("#chat").load("../components/chat.html");
     $("#playersList").load("../components/playersList.html"); 
     $("#connectForm").load("../components/connectForm.html");
-    
+    $("#chatShowButton").load("../components/chatShowButton.html");
 
     $("#game").fadeOut();
     $("#chat").fadeOut();
+    $("#chatShowButton").fadeOut();
 });
