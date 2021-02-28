@@ -51,25 +51,19 @@ class Game {
     }
 
     constructor () {
+        this.map = [
+            { x: 0, y: 2, clite: "iron_ore_clite" },
+            { x: 3, y: 4, clite: "stone_ore_clite" },
+            { x: 7, y: 2, clite: "stone_ore_clite" }
+        ];
+
         gameCanvas.width = window.innerWidth;
         gameCanvas.height = window.innerHeight;
         
-        this.images = {
-            "default_clite": new Image(),
-            "stone_ore_clite": new Image(),
-            "iron_ore_clite": new Image()
-        }
-        //33 33 33
-
-        this.images.default_clite.src = "img/default_clite3x3.png";
-        this.images.stone_ore_clite.src = "img/stone_ore_clite.png";
-        this.images.iron_ore_clite.src = "img/iron_ore_clite.png";
-
         this.canvas = gameCanvas;
 
-        console.log()
-
         this.ctx = gameCanvas.getContext('2d');
+        this.loadImages();
         this.update(this);
         
         //Events
@@ -159,9 +153,12 @@ class Game {
         let overX = startX + Math.floor(this.canvas.width / this.camera.blockWidth) + 2;
         let overY = startY + Math.floor(this.canvas.height / this.camera.blockHeight) + 2;
 
+        this.gameResources.default_clite.draw(this.ctx, 0, 0);
+
+        
         for (let y = startY; y < overY; y++) {
             for (let x = startX; x < overX; x++) {
-                this.ctx.drawImage(this.images.default_clite,
+                this.gameResources.default_clite.draw(this.ctx,
                                     x * this.camera.blockWidth - this.camera.x,
                                     y * this.camera.blockHeight - this.camera.y,
                                     this.camera.blockWidth,
@@ -169,27 +166,48 @@ class Game {
             }
         }
 
-        let x = 10, y = 4;
-
-        this.ctx.drawImage(this.images.stone_ore_clite,
-                                    x * this.camera.blockWidth - this.camera.x,
-                                    y * this.camera.blockHeight - this.camera.y,
-                                    this.camera.blockWidth,
-                                    this.camera.blockHeight);
-
-        x = 14, y = 5;
-
-        this.ctx.drawImage(this.images.iron_ore_clite,
-                                    x * this.camera.blockWidth - this.camera.x,
-                                    y * this.camera.blockHeight - this.camera.y,
-                                    this.camera.blockWidth,
-                                    this.camera.blockHeight);
+        this.map.forEach(obj => {
+            this.gameResources[obj.clite].draw(this.ctx,
+                                            obj.x * this.camera.blockWidth - this.camera.x,
+                                            obj.y * this.camera.blockHeight - this.camera.y,
+                                            this.camera.blockWidth,
+                                            this.camera.blockHeight);
+        });
     }
 
     //Don't need it
     moveCamera () {
         this.camera.x += this.camera.move.speed * this.camera.move.x;
         this.camera.y += this.camera.move.speed * this.camera.move.y;
+    }
+
+    loadImages () {
+        this.gameResources = {
+            "default_clite": { sprite: { src: "img/default_clite3x3.png" }, width: 96, height: 96 },
+            "stone_ore_clite": { sprite: {src: "img/stone_ore_clite.png" }, width: 96, height: 96 },
+            "iron_ore_clite": { sprite: { src: "img/iron_ore_clite.png" }, width: 96, height: 96 },
+            "base_clite": { sprite: { src: "img/base_clite.png" }, width: 96, height: 96 },
+            "house_clite": { sprite: { src: "img/house_clite.png" }, width: 32, height: 32 }
+        }
+
+        for (let res in this.gameResources) {
+            this.gameResources[res] = new GameObject(this.gameResources[res]);
+        }
+    }
+}
+
+class GameObject {
+    constructor (obj) {
+        this.obj = obj;
+        
+        //Image loading
+        this.obj.sprite.img = new Image();
+        this.obj.sprite.img.src = this.obj.sprite.src;
+    }
+
+    draw(ctx, x, y, width = this.obj.width, height = this.obj.height) {
+        ctx.drawImage(this.obj.sprite.img,
+                        x, y, width, height);
     }
 }
 
