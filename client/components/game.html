@@ -26,7 +26,7 @@
 
 <script>
 $(function(){
-    //$("#game #gameWrapper #buildsTable").load("components/gameGui/buildsTable.html");
+    $("#game #gameWrapper #buildsTable").load("components/gameGui/buildsTable.html");
 })
 
 class Game {
@@ -59,8 +59,9 @@ class Game {
             "stone_ore_clite": new Image(),
             "iron_ore_clite": new Image()
         }
+        //33 33 33
 
-        this.images.default_clite.src = "img/default_clite.png";
+        this.images.default_clite.src = "img/default_clite3x3.png";
         this.images.stone_ore_clite.src = "img/stone_ore_clite.png";
         this.images.iron_ore_clite.src = "img/iron_ore_clite.png";
 

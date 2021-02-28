@@ -38,6 +38,11 @@
     font-size:14px;
 }
 
+#playersList .playersList .active {
+    background: rgba(128, 128, 128, 0.192);
+    color: black;
+}
+
 #playersList .playersList .header {
     font-size: 18px;
     padding: 10px 10px 2px 10px;
@@ -91,9 +96,16 @@ socket.on('sendPlayersList', (data) => {
         for (playerId in data) {
             player = data[playerId];
 
+            //TODO: Блять перепишіть хтось цей ГоВнОкОд
             if (player.online)
-                $(".list").append(`<div class="player">${player.name}</div>`);
-        }
+                if (Player)
+                    if (playerId == Player.id)
+                        $(".list").append(`<div class="player active">${player.name}</div>`);
+                    else
+                        $(".list").append(`<div class="player">${player.name}</div>`);
+                else
+                    $(".list").append(`<div class="player">${player.name}</div>`);
+            }
     }
 });
 

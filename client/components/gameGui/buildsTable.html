@@ -1,19 +1,33 @@
-<div class="label">
-    Resources
+<div class="wrap">
+    <div class="label">
+        Builds
+    </div>
 </div>
 
 <style>
 #buildsTable {
     position: absolute;
-    left: calc(100% - 200px);
-    width: 200px;
+    width: 100%;
+    height: 80px;
+    top: calc(100% - 90px);
+}
+
+#buildsTable .wrap {
     background: rgba(255, 255, 255, 0.1);
+    width: 48%;
     height: 100%;
+    margin: auto;
 }
 
 #buildsTable .label {
     color: white;
     background: rgb(83, 83, 83);
+}
+
+@media screen and (max-width: 700px) {
+    #buldsTable .wrap {
+        width: calc(100% - 100px);
+    }
 }
 </style>
 

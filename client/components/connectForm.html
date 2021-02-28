@@ -40,6 +40,8 @@ $('#connectForm #ok').click( () => {
                 $("#background").fadeOut();
                 $("#game").fadeIn();
 
+                $("#playerInfo .playerId").html(`${ Player.id }`);
+
                 console.log('Registration successfuly');
             } else {
                 alert('Registration failed.');
@@ -62,6 +64,8 @@ function fullAccess(nickname = "Developer") {
             $("#chat").fadeIn();
             $("#background").fadeOut();
             $("#game").fadeIn();
+
+            $("#playerInfo .playerId").html(`${ Player.id }`);
 
             console.log('Registration successfuly');
         } else {

@@ -14,6 +14,7 @@ $(function(){
     $("#playersList").load("../components/playersList.html"); 
     $("#connectForm").load("../components/connectForm.html");
     $("#chatShowButton").load("../components/chatShowButton.html");
+    $("#playerInfo").load("../components/playerInfo.html");
 
     $("#game").fadeOut();
     $("#chat").fadeOut();
