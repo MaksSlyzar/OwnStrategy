@@ -22,7 +22,10 @@ io.on('connection', (socket) => {
         if (user.name.length > 7) {
             const id = Math.round(Math.random() * 1000000);
 
-            players[id] = { name: user.name, id: id, registrationDate: Date.now(), online: true };
+            players[id] = { name: user.name, id: id, registrationDate: Date.now(), online: true, 
+                            builds: [
+                                { x: 5, y: 2, clite: "base_clite" },
+                            ], units: [] };
 
             userRegistration = true;
 
@@ -65,6 +68,7 @@ function update() {
 
         return result;
     }(players));
+
     setTimeout(update, 300);
 }
 

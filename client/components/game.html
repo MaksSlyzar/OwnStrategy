@@ -30,8 +30,10 @@ $(function(){
 })
 
 class Game {
+    players = {}
+
     camera = {
-        x: 10,
+        x: 0,
         y: 0,
         move: {
             speed: 0,
@@ -41,8 +43,8 @@ class Game {
             xDown: null,
             yDown: null
         },
-        blockWidth: 64,
-        blockHeight: 64
+        blockWidth: 96,
+        blockHeight: 96
     }
 
     mouse = {
@@ -50,11 +52,14 @@ class Game {
         move: false
     }
 
+    selectBuild = {
+        name: "house_clite",
+        x: 0,
+        y: 0
+    }
+
     constructor () {
         this.map = [
-            { x: 0, y: 2, clite: "iron_ore_clite" },
-            { x: 3, y: 4, clite: "stone_ore_clite" },
-            { x: 7, y: 2, clite: "stone_ore_clite" }
         ];
 
         gameCanvas.width = window.innerWidth;
@@ -87,6 +92,13 @@ class Game {
 
                 this.camera.move.xDown = xCl;
                 this.camera.move.yDown = yCl;
+            }
+
+            if (!this.mouse.down) {
+                if (this.selectBuild.name) {
+                    this.selectBuild.x = xCl - ((this.camera.blockWidth / 4) * this.gameResources[this.selectBuild.name].obj.width) / 2;
+                    this.selectBuild.y = yCl - ((this.camera.blockHeight / 4) * this.gameResources[this.selectBuild.name].obj.height) / 2;
+                }
             }
         }
 
@@ -135,6 +147,23 @@ class Game {
             this.camera.move.xDown = null;
             this.camera.move.yDown = null;
         }
+
+        this.connections();
+    }
+
+    connections() {
+        socket.on('sendPlayersList', (data) => {
+            this.players = ((data) => {
+                const onlinePlayers = {};
+
+                for (let id in data) {
+                    if (data[id].online)
+                        onlinePlayers[id] = data[id];
+                }
+
+                return onlinePlayers;
+            })(data);
+        });
     }
 
     update(self) {
@@ -147,13 +176,13 @@ class Game {
     }
 
     drawGrid() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
         let startX = Math.floor(this.camera.x / this.camera.blockWidth);
         let startY = Math.floor(this.camera.y / this.camera.blockHeight);
 
         let overX = startX + Math.floor(this.canvas.width / this.camera.blockWidth) + 2;
         let overY = startY + Math.floor(this.canvas.height / this.camera.blockHeight) + 2;
-
-        this.gameResources.default_clite.draw(this.ctx, 0, 0);
 
         
         for (let y = startY; y < overY; y++) {
@@ -166,13 +195,25 @@ class Game {
             }
         }
 
-        this.map.forEach(obj => {
-            this.gameResources[obj.clite].draw(this.ctx,
+        for (let playerId in this.players) {
+            const player = this.players[playerId];
+            const builds = player.builds;
+
+            builds.forEach(obj => {
+                this.gameResources[obj.clite].draw(this.ctx,
                                             obj.x * this.camera.blockWidth - this.camera.x,
                                             obj.y * this.camera.blockHeight - this.camera.y,
-                                            this.camera.blockWidth,
-                                            this.camera.blockHeight);
-        });
+                                            (this.camera.blockWidth / 4) * this.gameResources[obj.clite].obj.width,
+                                            (this.camera.blockHeight / 4) * this.gameResources[obj.clite].obj.height);
+            });
+        }
+
+        if (this.selectBuild.name)
+            this.gameResources[this.selectBuild.name].draw(this.ctx,
+                                            (Math.round(this.selectBuild.x / ((this.camera.blockWidth / 4) * this.gameResources[this.selectBuild.name].obj.width)) * ((this.camera.blockWidth / 4) * this.gameResources[this.selectBuild.name].obj.width)) - (this.camera.x - ((this.camera.blockWidth / 4) * this.gameResources[this.selectBuild.name].obj.width)),
+                                            (Math.round(this.selectBuild.y / ((this.camera.blockHeight / 4) * this.gameResources[this.selectBuild.name].obj.height)) * ((this.camera.blockHeight / 4) * this.gameResources[this.selectBuild.name].obj.height)) - (this.camera.y - ((this.camera.blockHeight / 4) * this.gameResources[this.selectBuild.name].obj.height)),
+                                                (this.camera.blockWidth / 4) * this.gameResources[this.selectBuild.name].obj.width,
+                                                (this.camera.blockHeight / 4) * this.gameResources[this.selectBuild.name].obj.height)
     }
 
     //Don't need it
@@ -183,11 +224,11 @@ class Game {
 
     loadImages () {
         this.gameResources = {
-            "default_clite": { sprite: { src: "img/default_clite3x3.png" }, width: 96, height: 96 },
-            "stone_ore_clite": { sprite: {src: "img/stone_ore_clite.png" }, width: 96, height: 96 },
-            "iron_ore_clite": { sprite: { src: "img/iron_ore_clite.png" }, width: 96, height: 96 },
-            "base_clite": { sprite: { src: "img/base_clite.png" }, width: 96, height: 96 },
-            "house_clite": { sprite: { src: "img/house_clite.png" }, width: 32, height: 32 }
+            "default_clite": { sprite: { src: "img/default_clite3x3.png" }, width: 4, height: 4 },
+            "stone_ore_clite": { sprite: {src: "img/stone_ore_clite.png" }, width: 3, height: 3 },
+            "iron_ore_clite": { sprite: { src: "img/iron_ore_clite.png" }, width: 3, height: 3 },
+            "base_clite": { sprite: { src: "img/base_clite.png" }, width: 4, height: 4 },
+            "house_clite": { sprite: { src: "img/house_clite.png" }, width: 2, height: 2 }
         }
 
         for (let res in this.gameResources) {
